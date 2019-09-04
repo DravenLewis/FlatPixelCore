@@ -18,3 +18,7 @@ and as i was a highschool student at the time, most of this code needs to be opt
 # Distribution
 You are free to distribute this code and its compiled form (.jar) freely under the terms of the GNU GPL-3 license, i just ask that
 you site me in your code/game credits, and link back to this page :)
+
+# Wiki
+[Flat Pixel Wiki](https://github.com/DravenLewis/FlatPixelCore/wiki/Flat-Pixel-Wiki)
+
