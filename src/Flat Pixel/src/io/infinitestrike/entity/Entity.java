@@ -16,8 +16,6 @@ import io.infinitestrike.core.util.ResourceLoader;
 import io.infinitestrike.js.Script;
 import io.infinitestrike.level.TileBasedGameLevel;
 import io.infinitestrike.state.LevelState;
-import io.infinitestrike.ui.GUILayer;
-import io.infinitestrike.ui.GUIObject;
 
 public abstract class Entity implements AbstractGameObject {
 
@@ -223,28 +221,6 @@ public abstract class Entity implements AbstractGameObject {
 		this.onDimensionChange(this);
 	}
 
-	@Broken
-	public void applyOBJDIData(String objdipath) {
-		OBJDIEntityAssistant.applyDataFromStream(this, ResourceLoader.loadResource(objdipath));
-	}
-
-	public void applyJSData(Script s) {
-		this.importScript(s);
-		s.callFunction("onCall", this);
-	}
-
-	public void callFunction(Script s, String function, Object... objects) {
-		s.callFunction(function, objects);
-	}
-
-	public void callFunction(int index, String function, Object... objects) {
-		this.scripts.get(index).callFunction(function, objects);
-	}
-
-	public void callFunction(String function, Object... objects) {
-		this.scripts.get(0).callFunction(function, objects);
-	}
-
 	public void moveCollisionDetected(float x, float y) {
 
 		if (this.manager == null) {
@@ -403,11 +379,6 @@ public abstract class Entity implements AbstractGameObject {
 			Rectangle playerNext = new Rectangle(this.getLocation().x + x, this.getLocation().y + y,
 					this.getSize().getWidth(), this.getSize().getHeight());
 			Rectangle entityBoundingBox = e.getBounds();
-
-			if (playerNext.intersects(entityBoundingBox) && e != this && !(e instanceof GUIObject)
-					&& !(e instanceof GUILayer)) {
-				return false;
-			}
 		}
 		return true;
 	}
@@ -421,11 +392,6 @@ public abstract class Entity implements AbstractGameObject {
 		for (Entity e : this.getEntityManager().getEntities()) {
 			Rectangle playerNext = new Rectangle((this.getLocation().x + x), (this.getLocation().y + y), w, h);
 			Rectangle entityBoundingBox = e.getBounds();
-
-			if (playerNext.intersects(entityBoundingBox) && e != this && !(e instanceof GUIObject)
-					&& !(e instanceof GUILayer)) {
-				return false;
-			}
 		}
 		return true;
 	}
@@ -439,11 +405,6 @@ public abstract class Entity implements AbstractGameObject {
 		for (Entity e : this.getEntityManager().getEntities()) {
 			Rectangle playerNext = new Rectangle((this.getLocation().x + x), (this.getLocation().y + y), w, h);
 			Rectangle entityBoundingBox = e.getBounds();
-
-			if (playerNext.intersects(entityBoundingBox) && e != this && !(e instanceof GUIObject)
-					&& !(e instanceof GUILayer) && e.getClass().isInstance(type)) {
-				return false;
-			}
 		}
 		return true;
 	}

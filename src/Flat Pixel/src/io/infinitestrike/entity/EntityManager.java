@@ -14,8 +14,6 @@ import io.infinitestrike.core.Core;
 import io.infinitestrike.core.LogBot;
 import io.infinitestrike.core.TemplateGame;
 import io.infinitestrike.state.LevelState;
-import io.infinitestrike.ui.GUILayer;
-import io.infinitestrike.ui.GUIObject;
 
 public class EntityManager {
 
@@ -52,9 +50,6 @@ public class EntityManager {
 	public EntityManager(GameContainer cont, StateBasedGame game) {
 		this.container = cont;
 		this.game = game;
-
-		this.addExcludedObject(GUIObject.class);
-		this.addExcludedObject(GUILayer.class);
 	}
 
 	public void addEntity(Entity e) {

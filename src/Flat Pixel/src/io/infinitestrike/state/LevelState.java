@@ -24,9 +24,7 @@ import io.infinitestrike.entity.EntityManager.PauseHandler;
 import io.infinitestrike.entity.InputEvent;
 import io.infinitestrike.level.TileBasedGameLevel;
 import io.infinitestrike.level.TileEntity;
-import io.infinitestrike.mechanics.message.MessageBox;
-import io.infinitestrike.mechanics.message.MessageBoxInterface;
-import io.infinitestrike.ui.GUILayer;
+
 
 public abstract class LevelState extends BasicGameState {
 
@@ -48,9 +46,6 @@ public abstract class LevelState extends BasicGameState {
 	private Random rand = new Random();
 	private float bgScrollOffsetX = 0;
 	private float bgScrollOffsetY = 0;
-
-	private GUILayer internalguiLayer;
-	private MessageBox box;
 
 	private int width;
 	private int height;
@@ -82,11 +77,6 @@ public abstract class LevelState extends BasicGameState {
 
 	public void removeEntity(Entity e) {
 		manager.removeEntity(e);
-	}
-
-	public void enterState(String name) {
-		TemplateGame g = (TemplateGame) game;
-		g.enterState(g.getStateIndex(name));
 	}
 
 	public void setLevel(TileBasedGameLevel level) {
@@ -149,9 +139,6 @@ public abstract class LevelState extends BasicGameState {
 		}
 	}
 
-	public MessageBoxInterface getMessageBoxReference() {
-		return new MessageBoxInterface(box);
-	}
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
@@ -163,14 +150,6 @@ public abstract class LevelState extends BasicGameState {
 
 		manager = new EntityManager(container, game);
 		manager.setState(this);
-
-		this.internalguiLayer = new GUILayer(0, 0, arg0.getWidth(), arg0.getHeight());
-		this.box = new MessageBox(0, 0, arg0.getHeight(), 96);
-
-		this.internalguiLayer.addGuiObject(box);
-		this.internalguiLayer.setBackgroundColor(new Color(0, 0, 0, 0));
-
-		this.box.setHidden(true);
 
 		this.initialize(arg0, arg1);
 	}
@@ -186,12 +165,6 @@ public abstract class LevelState extends BasicGameState {
 		manager.delegatedObjectUpdate(container, arg1, arg2, gameTimer);
 		this.draw(arg0, arg1, arg2);
 		this.postDraw(arg0, arg1, arg2);
-
-		if (!internalguiLayer.isHidden()) {
-			this.internalguiLayer.onPreDraw(arg0, arg1, arg2);
-			this.internalguiLayer.onDraw(arg0, arg1, arg2);
-			this.internalguiLayer.onPostDraw(arg0, arg1, arg2);
-		}
 	}
 
 	@Override
@@ -218,10 +191,6 @@ public abstract class LevelState extends BasicGameState {
 		if (!this.isPaused()) {
 			this.postTick(arg0, arg1, arg2);
 		}
-
-		internalguiLayer.onPostTick(arg0, arg1, arg2);
-		internalguiLayer.onTick(arg0, arg1, arg2);
-		internalguiLayer.onPostTick(arg0, arg1, arg2);
 
 		BOTTOM = this.getBounds().getHeight();
 		RIGHT = this.getBounds().getWidth();
@@ -255,14 +224,12 @@ public abstract class LevelState extends BasicGameState {
 	public void keyPressed(int i, char c) {
 		this.onKeyPress(i, c);
 		this.manager.onKeyDown(i, c);
-		this.internalguiLayer.onKeyEvent(new InputEvent(), i, c);
 	}
 
 	@Override
 	public void keyReleased(int i, char c) {
 		this.onKeyRelease(i, c);
 		this.manager.onKeyUp(i, c);
-		this.internalguiLayer.onKeyEvent(new InputEvent(), i, c);
 	}
 
 	public abstract void initialize(GameContainer arg0, StateBasedGame arg1);

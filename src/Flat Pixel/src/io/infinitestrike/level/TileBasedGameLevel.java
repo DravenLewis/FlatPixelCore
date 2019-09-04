@@ -54,10 +54,6 @@ public abstract class TileBasedGameLevel {
 		this.defineWorldObjectClasses(Item.class);
 	}
 
-	public final void runInitScript(Script c, String function, Object... res) {
-		c.callFunction(function, res);
-	}
-
 	public final void defineWorldObjectClasses(Class<?> type) {
 		this.classObject.add(type);
 	}
@@ -250,11 +246,6 @@ public abstract class TileBasedGameLevel {
 					break;
 				case "infinite":
 					this.isInfinite = Boolean.parseBoolean(this.getMapFlags().get(s));
-					break;
-				case "script":
-					// load a new script externally
-					Script c = new Script(this.getMapFlags().get(s)); // the value should be a path!
-					this.runInitScript(c, "onMapLoad", null);
 					break;
 				default:
 					LogBot.logData(Status.WARNING, "Unknown key entry: " + s + ". Must Be User Defined. Ignoring.");

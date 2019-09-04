@@ -23,7 +23,7 @@ public abstract class TemplateGame extends StateBasedGame {
 
 	public static int GAME_FREQUENCY = 60;
 
-	private ArrayList<StateUnit> stateList = new ArrayList<StateUnit>();
+	public ArrayList<BasicGameState> stateList = new ArrayList<BasicGameState>();
 
 	// EventLists
 	private final ArrayList<GlobalAction> actions = new ArrayList<GlobalAction>();
@@ -73,29 +73,11 @@ public abstract class TemplateGame extends StateBasedGame {
 	public void addNewState(BasicGameState state, String name) {
 		if (state instanceof LevelState) {
 			LevelState state1 = (LevelState) state;
-			((LevelState) state).id = stateList.size();
-			this.stateList.add(new StateUnit(name, state1));
+			state1.id = stateList.size();
+			this.stateList.add(state1);
 		} else {
-			this.stateList.add(new StateUnit(name, state));
+			this.stateList.add(state);
 		}
-	}
-
-	public BasicGameState getState(String name) {
-		for (StateUnit u : stateList) {
-			if (u.name == name) {
-				return u.game;
-			}
-		}
-		return null;
-	}
-
-	public int getStateIndex(String name) {
-		for (StateUnit u : stateList) {
-			if (u.name == name) {
-				return stateList.indexOf(u.game);
-			}
-		}
-		return 0;
 	}
 
 	public int getStateIndex(LevelState state) {
@@ -112,7 +94,7 @@ public abstract class TemplateGame extends StateBasedGame {
 	 * this.enterState(getStateIndex(state)); }
 	 */
 
-	public ArrayList<StateUnit> getGameStateObjects() {
+	public ArrayList<BasicGameState> getGameStateObjects() {
 		return this.stateList;
 	}
 

@@ -19,8 +19,10 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import io.infinitestrike.core.annote.Broken;
 import io.infinitestrike.core.util.ArrayCompare;
 
+@Broken
 public class LauncherDialog extends JFrame{
 	
 	public int width = 640;
