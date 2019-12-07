@@ -276,6 +276,26 @@ public class Art {
 		}
 	}
 	
+	public static void draw(int x, int y, String s){
+		int row = 0;
+		int col = 0;
+		String lowerInput = s;
+		for(int i = 0; i < s.length(); i++){
+			if(s.charAt(i) == '\n'){
+				row += 16;
+				col = 0;
+			}else if(lowerInput.charAt(i) == (char) 255){
+				Image img = (Image) charMap.values().toArray()[new Random().nextInt(charMap.size())];
+				img.draw(x + (col * 16), y + row);
+			}else if(!charMap.containsKey(lowerInput.charAt(i))){
+				charMap.get((char) 225).draw(x + (col * 16), y + row);
+			}else{
+				charMap.get(s.charAt(i)).draw(x + (col * 16), y + row);
+			}
+			col+=1;
+		}
+	}
+	
 	public static void makeText(Graphics g, int x, int y, String s){
 		int row = 0;
 		int col = 0;
