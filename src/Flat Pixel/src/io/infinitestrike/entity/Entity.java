@@ -6,6 +6,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Dimension;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -37,7 +38,8 @@ public abstract class Entity implements AbstractGameObject {
 	private boolean hidden = false;
 	private boolean isSolid = false;
 	private boolean checkOOB = false;
-
+	private boolean grabbed = false;
+		
 	private Color blendColor = Color.white;
 	private boolean blendOption = false;
 
@@ -51,7 +53,8 @@ public abstract class Entity implements AbstractGameObject {
 	private ArrayList<EntityEffect> entityEffects = new ArrayList<EntityEffect>();
 	private ArrayList<Script> scripts = new ArrayList<Script>();
 
-	protected int cooldownMod = 0;
+	protected long cooldownMod = System.currentTimeMillis();
+	
 	protected int entityCooldown = 0;
 	private int maxEntityCooldown = 20;
 
@@ -87,6 +90,8 @@ public abstract class Entity implements AbstractGameObject {
 		size = new Dimension(w, h);
 	}
 
+	// [ --- CHOPPING BLOCK?
+	
 	public final boolean cooldownZero() {
 		if (this.entityCooldown == 0) {
 			this.entityCooldown = this.maxEntityCooldown;
@@ -103,11 +108,11 @@ public abstract class Entity implements AbstractGameObject {
 		return this.maxEntityCooldown;
 	}
 
+	// --- ]
+	
 	public final boolean countMod(int value) {
-		if (this.cooldownMod % value == 0) {
-			return true;
-		}
-		return false;
+		// EVERY 60 FRAMES?
+		return this.getLevel().frames % value == 0;
 	}
 
 	public final boolean isSolid() {
@@ -585,6 +590,14 @@ public abstract class Entity implements AbstractGameObject {
 		float y = this.getEntityManager().getConnectedLevelState().getContainer().getHeight() - Mouse.getY();
 
 		if (getEntityManager().checkMouseDownInside(this)) {
+			this.grabbed = true;
+		}
+		
+		if(!Mouse.isButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+			this.grabbed = false;
+		}
+		
+		if(this.grabbed) {
 			this.setLocation(new Vector2f(getLocation().x + InputEvent.MOUSE_DELTA_X,
 					getLocation().y + InputEvent.MOUSE_DELTA_Y));
 		}
@@ -741,11 +754,20 @@ public abstract class Entity implements AbstractGameObject {
 	}
 
 	public final void setUpdatePriority(int i) {
-		this.updatePriority = i;
-		this.getEntityManager().updateMaxPriority(i);
+		this.updatePriority = Math.max(0,Math.min(i, 10));
+		// YOU SHOULD NEVER NEED MORE THAN 10 LAYERS
+		//this.getEntityManager().updateMaxPriority(i);
 	}
 
 	public final int getUpdatePriority() {
 		return this.updatePriority;
+	}
+
+	public boolean isGrabbed() {
+		return grabbed;
+	}
+
+	public void setGrabbed(boolean grabbed) {
+		this.grabbed = grabbed;
 	}
 }

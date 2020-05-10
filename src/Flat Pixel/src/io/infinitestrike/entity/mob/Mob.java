@@ -42,7 +42,10 @@ public abstract class Mob extends Entity {
 		}
 	}
 
-	public void doGravity() {		
+	public void doGravity() {
+		
+		if(this.isGrabbed()) return;
+		
 		if (!onLadder() || !jumping) {
 			if (this.placeFree(0, gravity)) {
 				this.getLocation().y += this.gravity;

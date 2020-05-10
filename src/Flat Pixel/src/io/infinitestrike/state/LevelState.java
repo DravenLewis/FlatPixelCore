@@ -4,7 +4,6 @@ import java.util.Random;
 
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -22,6 +21,7 @@ import io.infinitestrike.entity.Entity;
 import io.infinitestrike.entity.EntityManager;
 import io.infinitestrike.entity.EntityManager.PauseHandler;
 import io.infinitestrike.entity.InputEvent;
+import io.infinitestrike.entity.NeoEntityManager;
 import io.infinitestrike.level.TileBasedGameLevel;
 import io.infinitestrike.level.TileEntity;
 
@@ -30,6 +30,8 @@ public abstract class LevelState extends BasicGameState {
 
 	public int id;
 	public int gameTimer = 0;
+	public int frames = 0;
+	public int maxFrameCount = 120; // set max delay to 2 frames;
 
 	public float TOP = 0;
 	public float LEFT = 0;
@@ -148,7 +150,7 @@ public abstract class LevelState extends BasicGameState {
 
 		this.setLevel(TileBasedGameLevel.getDefaultLevel(this.width, this.height));
 
-		manager = new EntityManager(container, game);
+		manager = new NeoEntityManager(container,game);//new EntityManager(container, game);
 		manager.setState(this);
 
 		this.initialize(arg0, arg1);
@@ -197,6 +199,9 @@ public abstract class LevelState extends BasicGameState {
 
 		TemplateGame game = (TemplateGame) this.game;
 		game.checkGlobalUpdates();
+		
+		this.frames++;
+		if(this.frames > this.maxFrameCount) this.frames = 0;
 	}
 
 	public final void cleanup() {

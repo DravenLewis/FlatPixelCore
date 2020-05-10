@@ -2,17 +2,28 @@ package io.infinitestrike.core;
 
 import java.util.ArrayList;
 
+import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import io.infinitestrike.core.LogBot.Status;
+import io.infinitestrike.core.annote.Broken;
 import io.infinitestrike.core.sound.SoundEngine;
+import io.infinitestrike.core.util.FPMath.Vector2i;
 import io.infinitestrike.state.LevelState;
 
 public abstract class TemplateGame extends StateBasedGame {
 
+	public static final int FULLSCREEN 	= 0b00000001;
+	public static final int VSYNC 		= 0b00000010;
+	//public static final int RESIZE      = 0b00000100;
+	
+	public static final int DEFAULT 	= 0b00000011;
+	public static final int NONE 		= 0b00000000;
+	
+	
 	private int updateTimer = 0;
 	private int secondTimer = 0;
 	private int elapsedTime = 0;
@@ -70,6 +81,9 @@ public abstract class TemplateGame extends StateBasedGame {
 		System.exit(status);
 	}
 
+	/*
+	 * Unneeded, use built in functions
+	 * 
 	public void addNewState(BasicGameState state, String name) {
 		if (state instanceof LevelState) {
 			LevelState state1 = (LevelState) state;
@@ -92,12 +106,14 @@ public abstract class TemplateGame extends StateBasedGame {
 	 * != null){ LevelState lstate = (LevelState) this.getCurrentState();
 	 * lstate.terminate(getContainer(), this); }
 	 * this.enterState(getStateIndex(state)); }
-	 */
+	 *
 
 	public ArrayList<BasicGameState> getGameStateObjects() {
 		return this.stateList;
 	}
 
+	*/
+	
 	public int getSecondTime() {
 		return this.secondTimer;
 	}
@@ -143,6 +159,30 @@ public abstract class TemplateGame extends StateBasedGame {
 		}
 	}
 
+	public static final AppGameContainer doBasicGameCreate(TemplateGame game, Vector2i windowSize, int controls) {
+		boolean isFullscreen 	= false;
+		boolean useVsync 		= false;
+		//boolean useResize 		= false;
+		// 0 0 0 0 0 0 R V F
+		
+		
+		isFullscreen = ((controls) & 0b1) != 0;
+		useVsync = ((controls >> 0b1) & 0b1) != 0;
+		//useResize = ((controls >> 0b10) & 0b1) != 0;
+		
+		try {
+			AppGameContainer c = new AppGameContainer(game);
+			c.setVSync(useVsync);
+			c.setDisplayMode(windowSize.x, windowSize.y, isFullscreen);
+			c.setShowFPS(false);
+			c.start();
+			return c;
+		}catch(Exception e) {
+			LogBot.logDataVerbose(e, Status.SEVERE, "Cannot Start Game: " + e.getLocalizedMessage());
+		}
+		return null;
+	}
+	
 	public final int getUpdateTimer() {
 		return updateTimer;
 	}

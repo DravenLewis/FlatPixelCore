@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import io.infinitestrike.core.Core;
 import io.infinitestrike.core.LogBot;
+import io.infinitestrike.core.LogBot.Status;
 import io.infinitestrike.core.TemplateGame;
 import io.infinitestrike.state.LevelState;
 
@@ -40,10 +41,10 @@ public class EntityManager {
 	private ArrayList<Entity> addcacheList = new ArrayList<Entity>();
 	private ArrayList<Entity> remcacheList = new ArrayList<Entity>();
 
-	private GameContainer container = null;
-	private StateBasedGame game = null;
-	private LevelState state = null;
-	private boolean isInterating = false;
+	protected GameContainer container = null;
+	protected StateBasedGame game = null;
+	protected LevelState state = null;
+	protected boolean isInterating = false;
 
 	private int updates = 0;
 
@@ -92,6 +93,10 @@ public class EntityManager {
 		return this.state;
 	}
 
+	public PauseHandler getPauseHandler() {
+		return this.handle;
+	}
+	
 	public void pause(PauseHandler h) {
 		h.attatch(this);
 		this.paused = true;
@@ -108,6 +113,7 @@ public class EntityManager {
 	}
 	
 	public void delegatedObjectUpdate(GameContainer arg0, StateBasedGame arg1, Graphics arg2, int arg3) {
+		
 		if (this.paused && this.handle != null) {
 			this.handle.haultedUpdate(arg1, arg0, arg2, arg3);
 		}
@@ -125,7 +131,7 @@ public class EntityManager {
 				if(this.paused == false) {e.onTick(arg0, arg1, arg3);}
 				if(this.paused == false) {e.onPostTick(arg0, arg1, arg3);}
 				e.doEffects();
-				e.cooldownMod++;
+				////e.cooldownMod++; //
 				this.updates++;
 			}
 			this.isInterating = false;
@@ -145,7 +151,7 @@ public class EntityManager {
 					if(this.paused == false) {e.onTick(arg0, arg1, arg3);}
 					if(this.paused == false) {e.onPostTick(arg0, arg1, arg3);}
 					e.doEffects();
-					e.cooldownMod++;
+					////e.cooldownMod++;
 					this.updates++;
 				}
 			}
@@ -166,7 +172,7 @@ public class EntityManager {
 					if(this.paused == false) {e.onTick(arg0, arg1, arg3);}
 					if(this.paused == false) {e.onPostTick(arg0, arg1, arg3);}
 					e.doEffects();
-					e.cooldownMod++;
+					////e.cooldownMod++;
 					this.updates++;
 				}
 				this.isInterating = false;
@@ -184,7 +190,7 @@ public class EntityManager {
 						if(this.paused == false) {e.onTick(arg0, arg1, arg3);}
 						if(this.paused == false) {e.onPostTick(arg0, arg1, arg3);}
 						e.doEffects();
-						e.cooldownMod++;
+						////e.cooldownMod++;
 						arg2.setColor(Color.red);
 						arg2.draw(e.getBounds());
 						this.updates++;
@@ -228,7 +234,7 @@ public class EntityManager {
 			for (Entity e : entityList) {
 				if (this.isOnScreen(e) || Core.complexInstanceOf(e, excludeList)) {
 					e.doEffects();
-					e.cooldownMod++;
+					////e.cooldownMod++;
 					this.updates++;
 				}
 			}
@@ -277,7 +283,7 @@ public class EntityManager {
 					if (e.getUpdatePriority() == i) {
 						if (this.isOnScreen(e) || Core.complexInstanceOf(e, excludeList)) {
 							e.doEffects();
-							e.cooldownMod++;
+							////e.cooldownMod++;
 							this.updates++;
 						}
 					}
@@ -326,7 +332,7 @@ public class EntityManager {
 					if (e.getUpdatePriority() == i) {
 						if (!Core.complexInstanceOf(e, excludeList)) {
 							e.doEffects();
-							e.cooldownMod++;
+							//e.cooldownMod++;
 							this.updates++;
 						}
 					}
@@ -457,7 +463,7 @@ public class EntityManager {
 		return true;
 	}
 
-	public final void cleanUp() {
+	public void cleanUp() {
 		for (int i = 0; i < this.getEntities().size(); i++) {
 			this.removeEntity(this.getEntities().get(i));
 		}
