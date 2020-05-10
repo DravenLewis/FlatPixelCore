@@ -8,6 +8,7 @@ import io.infinitestrike.level.TileBasedGameLevel;
 
 public abstract class BasicLevelState extends LevelState {
 
+	
 	public BasicLevelState(int id, int width, int height) {
 		super(id, width, height);
 		// TODO Auto-generated constructor stub
