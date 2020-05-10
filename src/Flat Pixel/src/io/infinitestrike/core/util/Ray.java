@@ -5,6 +5,12 @@ import org.newdawn.slick.geom.Vector2f;
 
 import io.infinitestrike.core.Core;
 
+@Deprecated
+/**
+ * 
+ * @author draven
+ * @see RayCast
+ */
 public class Ray {
 	
 	private Rectangle rect = null;
