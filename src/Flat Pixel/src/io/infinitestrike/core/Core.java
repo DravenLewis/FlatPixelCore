@@ -10,6 +10,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import io.infinitestrike.core.annote.Broken;
+import io.infinitestrike.core.util.FPMath.Vector2i;
+
 public class Core {
 
 	public static String cwd() {
@@ -284,6 +287,8 @@ public class Core {
 		/**
 		 * Easy way to calculate a point bound to a grid that can move.
 		 * 
+		 * @Deprecated - Can give incorrect pixel offsets if the grid is not the same size. Use @see getCell()
+		 * 
 		 * @param x  - x pos of input point
 		 * @param y  - y pos of input point
 		 * @param gx - grid size x
@@ -296,6 +301,8 @@ public class Core {
 		 * @param yo - the y offset of the grid (for a movable grid)
 		 * @return a vector containing the 2 points.
 		 */
+		@Deprecated
+		@Broken	
 		public static Vector2f getPointBoundToGrid(float x, float y, float gx, float gy, float bx, float by, float xo,
 				float yo) {
 			float fx = xo;
@@ -310,13 +317,52 @@ public class Core {
 			return new Vector2f(xn, yn);
 		}
 
+		/**
+		 * Easy way to find a grid space cell index on a grid in screen space
+		 * 
+		 * @param fieldOffset The Offset of the Grid Area
+		 * @param screenSpacePoint The Screen Space Point we want to find the grid index of (e.g. a mouse pointer on a grid of cells)
+		 * @param gridPixelSize The Size, in pixels, of the grid in screen space.
+		 * @param cellSize The Size of the square cells in pixels.
+		 * 
+		 * @return a Vector2 containing the grid space X,Y projection position of the supplied point.
+		 */
+		public Vector2f getCell(Vector2f fieldOffset, Vector2f screenSpacePoint, Vector2i gridPixelSize, int cellSize) {
+			
+			// Bind the Position Relative to the Grid
+			float boundOffsetX = screenSpacePoint.x - fieldOffset.x;
+			float boundOffsetY = screenSpacePoint.y - fieldOffset.y;
+			
+			// Scale the Relative position to an offset in cells space
+			// X Cell Location = floor(X Relative offset * (Horizontal Cell Count) / Number of pixels the grid is wide)
+			// Y Cell Location = floot(Y Relative offset * (Vertical Cell Count) / Number of pixels the grid is high)
+			
+			float fieldQuotientX = (float) Math.floor(boundOffsetX * ((gridPixelSize.x/cellSize) / gridPixelSize.x));
+			float fieldQuotientY = (float) Math.floor(boundOffsetY * ((gridPixelSize.y/cellSize) / gridPixelSize.y));
+			
+			// Clamp the output to only be valid to the grid, as the bound offset is still in screen space, 
+			// therefore you can techically have a cell at (-1,-1) or (x + 1, y + 1), where x and y are the 
+			// max values the grid has. Prevents IndexOutOfBoundsException.
+			
+			float gridBoundX = fclamp(fieldQuotientX, 0, (gridPixelSize.x / cellSize) - 1);
+			float gridBoundY = fclamp(fieldQuotientY, 0, (gridPixelSize.y / cellSize) - 1);
+			
+			
+			// Return the clamped orderd pair
+			return new Vector2f(gridBoundX,gridBoundY);
+		}
+		
 		public static float getAngleFromPoints(Vector2f source, Vector2f target) {
-			// float deltaX = a.x - b.x;
-			// float deltaY = a.y - b.y;
-			// float angle = (float) Math.toDegrees((float)
-			// Math.atan(Math.tan(deltaY/deltaX)));
 			float angle = (float) Math.toDegrees(Math.atan2(target.y - source.y, target.x - source.x));
 			return angle;
+		}
+		
+		public static float fclamp(float i, float min, float max) {
+			return Math.max(min, Math.min(max, i));
+		}
+		
+		public static int iclamp(int i, int min, int max) {
+			return Math.max(min, Math.min(max, i));
 		}
 	}
 }

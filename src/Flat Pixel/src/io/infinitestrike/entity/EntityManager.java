@@ -38,8 +38,8 @@ public class EntityManager {
 
 	private ArrayList<Entity> entityList = new ArrayList<Entity>();
 	private ArrayList<Class<?>> excludeList = new ArrayList<Class<?>>();
-	private ArrayList<Entity> addcacheList = new ArrayList<Entity>();
-	private ArrayList<Entity> remcacheList = new ArrayList<Entity>();
+	protected ArrayList<Entity> addcacheList = new ArrayList<Entity>();
+	protected ArrayList<Entity> remcacheList = new ArrayList<Entity>();
 
 	protected GameContainer container = null;
 	protected StateBasedGame game = null;
@@ -479,6 +479,24 @@ public class EntityManager {
 		return list;
 	}
 
+	public final boolean placeFree(float x, float y) {
+		for(Entity e : this.entityList) {
+			if(e.getBounds().contains(x, y)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public final Entity entityAtPoint(float x, float y) {
+		for(Entity e : this.entityList) {
+			if(e.getBounds().contains(x, y)) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
 	public final int getRenderDistance() {
 		return renderDistance;
 	}

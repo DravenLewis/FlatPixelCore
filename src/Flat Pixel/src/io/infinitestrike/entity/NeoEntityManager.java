@@ -1,8 +1,12 @@
 package io.infinitestrike.entity;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
+
+import io.infinitestrike.core.TemplateGame;
 
 
 // ONLY GONNA EXTENDS FOR LEGACY SUPPORT!! [My Remove Later!!]
@@ -16,6 +20,8 @@ public class NeoEntityManager extends EntityManager{
 	}
 
 	public void delegatedObjectUpdate(GameContainer arg0, StateBasedGame arg1, Graphics arg2, int arg3) {
+		
+		this.isInterating = true;
 		
 		// TICK
 		if(this.isPaused() && this.getPauseHandler() != null) {
@@ -47,5 +53,25 @@ public class NeoEntityManager extends EntityManager{
 				}
 			}
 		}
+		
+		this.isInterating = false;
+		
+		TemplateGame game = (TemplateGame) arg1;
+		if (game.getUpdateTimer() % 5 == 0) {
+			doInput();
+		}
+
+		// Perform the operations on the cached items and then
+		// remove them from the list.
+		for (Entity e : this.addcacheList) {
+			this.addEntity(e);
+		}
+
+		for (Entity e : this.remcacheList) {
+			this.removeEntity(e);
+		}
+
+		addcacheList = new ArrayList<Entity>();
+		remcacheList = new ArrayList<Entity>();
 	}
 }
