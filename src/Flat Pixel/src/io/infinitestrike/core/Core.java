@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.newdawn.slick.geom.Vector2f;
 
+import io.infinitestrike.core.LogBot.Status;
 import io.infinitestrike.core.annote.Broken;
 import io.infinitestrike.core.util.FPMath.Vector2i;
 
@@ -193,6 +194,49 @@ public class Core {
 		return dat;
 	}
 
+	public static <T> void ArrayListCopy(ArrayList<T> source, ArrayList<T> target){
+		for(T t : source) {
+			target.add(t);
+		}
+	}
+	
+	public static <K,V> void HashMapCopy(HashMap<K,V> from, HashMap<K,V> to, boolean clearTarget){
+		if(clearTarget) {
+			LogBot.logData(Status.INFO,"[Core::HashMapCopy] Clearing Target");
+			to.clear();
+		};
+		
+		Object[] keys = from.keySet().toArray();
+		Object[] vals = from.values().toArray();
+		LogBot.logData(Status.INFO,"[Core::HashMapCopy] Read Recorde: Keys: " + keys.length + " Values: " + vals.length);
+		if(keys.length == vals.length) {
+			for(int i = 0; i < keys.length; i++) {
+				try {
+					to.put((K) keys[i],(V) vals[i]);
+					LogBot.logData(Status.INFO,"[Core::HashMapCopy] Copied " + (i + 1) + " of " + keys.length);
+				}catch(Exception e) {
+					LogBot.logDataVerbose(e,Status.ERROR,"Cannot Convert Object to Generic Type.");
+				}
+			}
+		}else {
+			LogBot.logData(Status.INFO,"[Core::HashMapCopy] Copy Failed, Key and Value sets are not the same size");
+		}
+	}
+	
+	public static <K,V> void printHashMap(HashMap<K,V> m) {
+		Object[] keys = m.keySet().toArray();
+		Object[] vals = m.values().toArray();
+		if(keys.length == vals.length) {
+			for(int i = 0; i < keys.length; i++) {
+				String out = "";
+				out += "[Key {ClassName:'"+((K) keys[i]).getClass().getName()+"'}] : " + keys[i] + " = ";
+				out += "[Val {ClassName:'"+((K) vals[i]).getClass().getName()+"'}] : " + vals[i];
+				LogBot.logData(Status.INFO,out);
+			}
+		}
+	}
+	
+	
 	public static void printHashMapData(HashMap map) {
 		Object[] keys = map.keySet().toArray();
 		Object[] values = map.values().toArray();
@@ -280,6 +324,14 @@ public class Core {
 			return (float) Math.sqrt(Math.pow(xxx, 2) + Math.pow(yyy, 2));
 		}
 
+		public static int get2DXFromIndex(int id, int width) {
+			return id % width;
+		}
+		
+		public static int get2DYFromIndex(int id, int width) {
+			return id / width;
+		}
+		
 		public static double randomRange(double firstBound, double lastBound) {
 			return ThreadLocalRandom.current().nextDouble(firstBound, lastBound + 1);
 		}
